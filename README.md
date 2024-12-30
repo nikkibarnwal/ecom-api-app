@@ -33,8 +33,6 @@ The API is documented using Swagger. You can access the Swagger UI at `/api-docs
 ## Scripts
 
 - `start`: Starts the server.
-- `dev`: Starts the server in development mode with hot reloading.
-- `test`: Runs the test suite.
 
 ## License
 
