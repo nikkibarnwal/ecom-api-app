@@ -1,3 +1,4 @@
+import ApplicationError from "../../error-handler/applicationError.js";
 import { uid } from "../../utils/common.js";
 import UserModel from "../user/user.model.js";
 
@@ -36,11 +37,11 @@ export default class ProductModel {
     // 1 validation part
     const userDetail = UserModel.getAllUsers().find((u) => u.id == userId);
     if (!userDetail) {
-      throw new Error("User not found");
+      throw new ApplicationError("User not found", 404);
     }
     const product = this.getAll().find((p) => p.id == productId);
     if (!product) {
-      throw new Error("Product not found");
+      throw new ApplicationError("Product not found", 404);
     }
     // check product have ratings
     if (!product.ratings) {

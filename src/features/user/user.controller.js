@@ -15,9 +15,9 @@ class UserController {
         type,
       };
       const user = await UserModel.SignUp(userDetails);
-      res.status(201).json(user);
+      res.status(process.env.CREATED_CODE).json(user);
     } catch (error) {
-      res.status(400).json({ error: error.message });
+      res.status(process.env.BAD_REQUEST_CODE).json({ error: error.message });
     }
   }
   singIn(req, res) {
@@ -25,7 +25,9 @@ class UserController {
       const { email, password } = req.body;
       const user = UserModel.SignIn(email, password);
       if (!user) {
-        return res.status(400).json({ error: "Wrong Credentials" });
+        return res
+          .status(process.env.BAD_REQUEST_CODE)
+          .json({ error: "Wrong Credentials" });
       }
       const token = jwt.sign(
         { userid: user.id, email: user.email },
@@ -34,9 +36,13 @@ class UserController {
           expiresIn: "1h",
         }
       );
-      return res.status(200).send({ message: "Login successfull", token });
+      return res
+        .status(process.env.SUCCESS_CODE)
+        .send({ message: "Login successfull", token });
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return res
+        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
+        .json({ error: error.message });
     }
   }
 }

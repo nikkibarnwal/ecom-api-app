@@ -8,26 +8,28 @@ export default class CartController {
       const { productId, quantity } = req.body;
       if (quantity < 1) {
         return res
-          .status(400)
+          .status(process.env.BAD_REQUEST_CODE)
           .json({ message: "quantity must be greater then 0", success: false });
       }
       if (!userId || !productId || !quantity) {
         return res
-          .status(400)
+          .status(process.env.BAD_REQUEST_CODE)
           .json({ message: "Missing required fields", success: false });
       }
 
       const cart = CartModel.add(userId, productId, quantity);
       if (cart) {
-        return res.status(400).json({ message: cart, success: false });
+        return res
+          .status(process.env.BAD_REQUEST_CODE)
+          .json({ message: cart, success: false });
       } else {
         return res
-          .status(201)
+          .status(process.env.CREATED_CODE)
           .json({ message: "Cart is updated", success: true });
       }
     } catch (error) {
       return res
-        .status(500)
+        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
         .json({ message: "Internal server error", error, success: false });
     }
   }
@@ -36,10 +38,12 @@ export default class CartController {
     const userId = req.jwtUserID;
     const cartItems = CartModel.get(userId);
     try {
-      return res.status(200).json({ cart: cartItems, success: true });
+      return res
+        .status(process.env.SUCCESS_CODE)
+        .json({ cart: cartItems, success: true });
     } catch (error) {
       return res
-        .status(500)
+        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
         .json({ message: "Internal server error", error, success: false });
     }
   }
@@ -49,7 +53,7 @@ export default class CartController {
     try {
       if (!userId || !cartItemId)
         return res
-          .status(400)
+          .status(process.env.BAD_REQUEST_CODE)
           .json({ message: "missing required cartItemId", success: false });
       else {
         const error = CartModel.delete(cartItemId, userId);
@@ -64,7 +68,7 @@ export default class CartController {
       }
     } catch (error) {
       res
-        .status(500)
+        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
         .json({ message: "Internal server error", error, success: false });
     }
   }
@@ -78,7 +82,7 @@ export default class CartController {
       else CartModel.clear(cartItemId, userId);
     } catch (error) {
       res
-        .status(500)
+        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
         .json({ message: "Internal server error", error, success: false });
     }
   }

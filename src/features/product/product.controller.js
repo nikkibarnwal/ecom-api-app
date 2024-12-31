@@ -4,9 +4,11 @@ export default class ProductController {
   getAllProducts(req, res) {
     try {
       const products = ProductModel.getAll();
-      res.status(200).send(products);
+      res.status(process.env.SUCCESS_CODE).send(products);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      return res
+        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
+        .json({ error: error.message });
     }
   }
 
@@ -17,10 +19,10 @@ export default class ProductController {
       name,
       price: parseFloat(price),
       sizes: sizes ? sizes.split(",") : [],
-      // imageUrl: req.file.filename,
+      imageUrl: req.file.filename,
     };
     const product = ProductModel.add(newProduct);
-    res.status(201).send({ success: true, product });
+    res.status(process.env.CREATED_CODE).send({ success: true, product });
   }
 
   getOneProduct(req, res) {
@@ -28,15 +30,15 @@ export default class ProductController {
     const product = ProductModel.get(productId);
     if (!product) {
       return res
-        .status(400)
+        .status(process.env.BAD_REQUEST_CODE)
         .send({ success: false, message: "Product not found" });
     }
-    return res.status(200).send({ product });
+    return res.status(process.env.SUCCESS_CODE).send({ product });
   }
   getFilterData(req, res) {
     const { minPrice, maxPrice, category } = req.query;
     const product = ProductModel.filterProduct(minPrice, maxPrice, category);
-    return res.status(200).send({ product });
+    return res.status(process.env.SUCCESS_CODE).send({ product });
   }
   rateProduct(req, res) {
     const userId = req.jwtUserID;
@@ -47,10 +49,12 @@ export default class ProductController {
       }
       ProductModel.rateProduct(userId, productId, rating);
     } catch (error) {
-      return res.status(400).send({ success: false, message: error.message });
+      return res
+        .status(process.env.BAD_REQUEST_CODE)
+        .send({ success: false, message: error.message });
     }
     return res
-      .status(200)
+      .status(process.env.SUCCESS_CODE)
       .send({ success: true, message: "Rating has been done" });
   }
 }

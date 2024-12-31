@@ -37,7 +37,7 @@ const productValidationRuqest = async (req, res, next) => {
   if (!validationError.isEmpty()) {
     const errMsg = [];
     validationError.errors.map((err) => errMsg.push({ [err.path]: err.msg }));
-    return res.status(400).json({ message: errMsg });
+    return res.status(process.env.BAD_REQUEST_CODE).json({ message: errMsg });
   }
   next();
 };

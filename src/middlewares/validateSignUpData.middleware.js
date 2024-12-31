@@ -44,10 +44,12 @@ const validateSignUpData = async (req, res, next) => {
       validationErrors.errors.map((err) =>
         errMsg.push({ [err.path]: err.msg })
       );
-      return res.status(400).json({ message: errMsg });
+      return res.status(process.env.BAD_REQUEST_CODE).json({ message: errMsg });
     }
   } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res
+      .status(process.env.INTERNAL_SERVER_ERROR_CODE)
+      .json({ message: "Internal Server Error" });
   }
   next();
 };

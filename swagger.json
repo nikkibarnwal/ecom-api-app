@@ -129,24 +129,31 @@
         "security": [{ "JWT": {} }],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "name": {
                     "type": "string"
                   },
-                  "image": {
+                  "desc": {
                     "type": "string"
                   },
                   "price": {
                     "type": "number"
                   },
-                  "quantity": {
-                    "type": "integer"
+                  "category": {
+                    "type": "string"
+                  },
+                  "imageUrl": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "sizes": {
+                    "type": "array"
                   }
                 },
-                "required": ["name", "image", "price", "quantity"]
+                "required": ["name", "desc", "price", "category", "imageUrl"]
               }
             }
           }

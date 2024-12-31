@@ -6,12 +6,14 @@ import cors from "cors";
 
 import productRouter from "./src/features/product/product.routes.js";
 import userRouter from "./src/features/user/user.routes.js";
-import basicAuthorizer from "./src/middlewares/basicAuthorizer.middlware.js";
+import basicAuthorizer from "./src/middlewares/basicAuthorizer.middleware.js";
 import jwtAuth from "./src/middlewares/jwtAuth.middleware.js";
 import { configDotenv } from "dotenv";
 import cartRouter from "./src/features/cart/cart.routes.js";
 import apiDoc from "./swagger.json" assert { type: "json" };
 import loggerMiddleware from "./src/middlewares/logger.middleware.js";
+import invalidRoutesHandlerMiddleware from "./src/middlewares/invalidRoutes.middleware.js";
+import { errorHandlerMiddleware } from "./src/middlewares/errorHandler.middleware.js";
 
 /** 2 create server */
 const app = express();
@@ -52,13 +54,6 @@ app.get("/", (req, res) => {
   res.send("Welcome to Ecommerce APIs");
 });
 
-/**  This middlware will handle all type of errors at application level*/
-/** Error handler middleware */
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).send("Something broke! please try again later");
-});
-
 /**set swagger route */
 /**Swagger url http://localhost:3100/api-docs/ */
 app.use("/api-docs", swagger.serve, swagger.setup(apiDoc));
@@ -71,14 +66,21 @@ app.use("/api/cart", jwtAuth, cartRouter);
 
 app.use("/api/users", userRouter);
 
+/**  This middlware will handle all type of errors at application level*/
+/** Error handler middleware */
+// app.use((err, req, res, next) => {
+//   /**Check if error is coming from ApplicationError.js file */
+//   if (err instanceof ApplicationError) {
+//     return res.status(err.statusCode).send(err.message);
+//   }
+//   console.error(err);
+//   res.status(500).send("Something broke! please try again later");
+// });
+// Middleware to handle errors
+app.use(errorHandlerMiddleware);
+
 /** 4 Middleware to handle 404 response */
-app.use((req, res) => {
-  res
-    .status(404)
-    .send(
-      "API not found, please check our documentation for more information at http://localhost:3100/api-docs"
-    );
-});
+app.use(invalidRoutesHandlerMiddleware);
 
 /** 5 specify port */
 app.listen(process.env.PORT, () => {

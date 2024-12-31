@@ -4,7 +4,9 @@ const jwtAuth = (req, res, next) => {
   let token = req.header("Authorization");
 
   if (!token) {
-    return res.status(401).send({ error: "Access denied. No token provided." });
+    return res
+      .status(process.env.UNAUTHORIZED_CODE)
+      .send({ error: "Access denied. No token provided." });
   }
 
   try {
@@ -14,7 +16,7 @@ const jwtAuth = (req, res, next) => {
     req.jwtUserID = decoded.userid;
     next();
   } catch (ex) {
-    res.status(400).send({ error: "Invalid token." });
+    res.status(process.env.BAD_REQUEST_CODE).send({ error: "Invalid token." });
   }
 };
 
