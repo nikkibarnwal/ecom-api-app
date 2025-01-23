@@ -1,4 +1,5 @@
 import { body, validationResult } from "express-validator";
+import { BAD_REQUEST_CODE } from "../config/statusCode.js";
 
 const productValidationRuqest = async (req, res, next) => {
   const rules = [
@@ -37,7 +38,7 @@ const productValidationRuqest = async (req, res, next) => {
   if (!validationError.isEmpty()) {
     const errMsg = [];
     validationError.errors.map((err) => errMsg.push({ [err.path]: err.msg }));
-    return res.status(process.env.BAD_REQUEST_CODE).json({ message: errMsg });
+    return res.status(BAD_REQUEST_CODE).json({ message: errMsg });
   }
   next();
 };

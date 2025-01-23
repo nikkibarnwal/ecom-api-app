@@ -15,7 +15,7 @@ const log = async (logData) => {
   }
 };
 */
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: "info",
   format: winston.format.json(),
   defaultMeta: { service: "request-logging" },

@@ -1,11 +1,12 @@
 import jwt from "jsonwebtoken";
+import { BAD_REQUEST_CODE, UNAUTHORIZED_CODE } from "../config/statusCode.js";
 
 const jwtAuth = (req, res, next) => {
   let token = req.header("Authorization");
 
   if (!token) {
     return res
-      .status(process.env.UNAUTHORIZED_CODE)
+      .status(UNAUTHORIZED_CODE)
       .send({ error: "Access denied. No token provided." });
   }
 
@@ -16,7 +17,7 @@ const jwtAuth = (req, res, next) => {
     req.jwtUserID = decoded.userid;
     next();
   } catch (ex) {
-    res.status(process.env.BAD_REQUEST_CODE).send({ error: "Invalid token." });
+    res.status(BAD_REQUEST_CODE).send({ error: "Invalid token." });
   }
 };
 

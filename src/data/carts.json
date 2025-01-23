@@ -1,0 +1,33 @@
+{
+  "cartId": "12345",
+  "userId": "67890",
+  "products": [
+    {
+      "productId": "abc123",
+      "name": "Product Name",
+      "quantity": 2,
+      "price": 29.99
+    },
+    {
+      "productId": "def456",
+      "name": "Product Name",
+      "quantity": 1,
+      "price": 49.99
+    },
+    {
+      "productId": "abc123",
+      "name": "Product Name",
+      "quantity": 2,
+      "price": 29.99
+    },
+    {
+      "productId": "def456",
+      "name": "Product Name",
+      "quantity": 1,
+      "price": 49.99
+    }
+  ],
+  "totalPrice": 160.96,
+  "createdAt": "2023-10-05T14:48:00.000Z",
+  "updatedAt": "2023-10-05T14:48:00.000Z"
+}

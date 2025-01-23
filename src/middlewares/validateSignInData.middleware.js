@@ -1,4 +1,8 @@
 import { body, validationResult } from "express-validator";
+import {
+  BAD_REQUEST_CODE,
+  INTERNAL_SERVER_ERROR_CODE,
+} from "../config/statusCode.js";
 
 const validateSignInData = async (req, res, next) => {
   const rules = [
@@ -32,11 +36,11 @@ const validateSignInData = async (req, res, next) => {
       validationErrors.errors.map((err) =>
         errMsg.push({ [err.path]: err.msg })
       );
-      return res.status(process.env.BAD_REQUEST_CODE).json({ message: errMsg });
+      return res.status(BAD_REQUEST_CODE).json({ message: errMsg });
     }
   } catch (error) {
     return res
-      .status(process.env.INTERNAL_SERVER_ERROR_CODE)
+      .status(INTERNAL_SERVER_ERROR_CODE)
       .json({ message: "Internal Server Error" });
   }
   next();

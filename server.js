@@ -1,5 +1,7 @@
 /**1 import express */
 /** And other important modules */
+
+import "./env.js";
 import express from "express";
 import swagger from "swagger-ui-express";
 import cors from "cors";
@@ -8,16 +10,16 @@ import productRouter from "./src/features/product/product.routes.js";
 import userRouter from "./src/features/user/user.routes.js";
 import basicAuthorizer from "./src/middlewares/basicAuthorizer.middleware.js";
 import jwtAuth from "./src/middlewares/jwtAuth.middleware.js";
-import { configDotenv } from "dotenv";
+
 import cartRouter from "./src/features/cart/cart.routes.js";
 import apiDoc from "./swagger.json" assert { type: "json" };
 import loggerMiddleware from "./src/middlewares/logger.middleware.js";
 import invalidRoutesHandlerMiddleware from "./src/middlewares/invalidRoutes.middleware.js";
 import { errorHandlerMiddleware } from "./src/middlewares/errorHandler.middleware.js";
+import { connectToMongoDB } from "./src/config/mongodb.js";
 
 /** 2 create server */
 const app = express();
-configDotenv();
 
 /**Cors policy configuration */
 /*
@@ -85,4 +87,6 @@ app.use(invalidRoutesHandlerMiddleware);
 /** 5 specify port */
 app.listen(process.env.PORT, () => {
   console.log("Server is listoning on " + process.env.PORT);
+  /** 6 connect to mongodb */
+  connectToMongoDB();
 });

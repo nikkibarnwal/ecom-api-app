@@ -11,17 +11,25 @@ const productController = new ProductController();
 // initilize all product controller methods
 // localhost/api/products
 
-productRouter.get("/", productController.getAllProducts);
+productRouter.get("/", (req, res) =>
+  productController.getAllProducts(req, res)
+);
 productRouter.post(
   "/",
   uploadFile.single("imageUrl"), //file name
   productValidationRuqest,
-  productController.addProduct
+  (req, res) => productController.addProduct(req, res)
 );
 
-productRouter.get("/filter", productController.getFilterData);
-productRouter.get("/:id", productController.getOneProduct);
+productRouter.get("/filter", (req, res) =>
+  productController.getFilterData(req, res)
+);
+productRouter.get("/:id", (req, res) =>
+  productController.getOneProduct(req, res)
+);
 
-productRouter.post("/rate", productController.rateProduct);
+productRouter.post("/rate", (req, res) =>
+  productController.rateProduct(req, res)
+);
 
 export default productRouter;

@@ -1,0 +1,29 @@
+{
+  "customerId": "67890",
+  "orderDate": "2023-10-05T14:48:00.000Z",
+  "status": "Processing",
+  "items": [
+    {
+      "productId": "abc123",
+      "productName": "Product Name",
+      "quantity": 2,
+      "price": 29.99
+    }
+  ],
+  "shippingAddress": {
+    "street": "123 Main St",
+    "city": "Anytown",
+    "state": "CA",
+    "zipCode": "12345",
+    "country": "USA"
+  },
+  "billingAddress": {
+    "street": "123 Main St",
+    "city": "Anytown",
+    "state": "CA",
+    "zipCode": "12345",
+    "country": "USA"
+  },
+  "paymentMethod": "Credit Card",
+  "totalAmount": 59.98
+}

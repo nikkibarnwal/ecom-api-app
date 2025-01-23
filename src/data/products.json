@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Product 1",
+    "description": "Description for product 1",
+    "price": 29.99,
+    "category": "Category 1",
+    "stock": 100,
+    "image": "https://example.com/product1.jpg"
+  },
+  {
+    "name": "Product 2",
+    "description": "Description for product 2",
+    "price": 49.99,
+    "category": "Category 2",
+    "stock": 50,
+    "image": "https://example.com/product2.jpg"
+  },
+  {
+    "name": "Product 3",
+    "description": "Description for product 3",
+    "price": 19.99,
+    "category": "Category 3",
+    "stock": 200,
+    "image": "https://example.com/product3.jpg"
+  }
+]

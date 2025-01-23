@@ -1,16 +1,23 @@
-import { getMongoDB } from "../../config/mongodb.js";
-import { USER_COLLECTION } from "../../config/collection.js";
-import ApplicationError from "../../error-handler/applicationError.js";
-
 export default class UserModel {
-  constructor(name, email, password, type, id) {
+  constructor(id, name, email, password, type) {
+    this.id = id;
     this.name = name;
     this.email = email;
     this.password = password;
     this.type = type;
-    this._id = id;
   }
-
+  static SignUp(user) {
+    const { name, email, password, type } = user;
+    const userDetails = {
+      id: uid(),
+      name,
+      email,
+      password,
+      type,
+    };
+    DBUsers.push({ ...userDetails });
+    return user;
+  }
   static SignIn(email, password) {
     const user = DBUsers.find(
       (u) =>

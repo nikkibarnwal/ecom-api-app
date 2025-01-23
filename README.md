@@ -4,36 +4,69 @@ This is the backend for the Ecom API application built with Node.js and Express.
 
 ## Features
 
-The features of this API are documented using Swagger. Below are some of the key features:
-
 - **User Authentication**: Secure user authentication and authorization.
 - **Product Management**: CRUD operations for managing products.
 - **Cart Management**: Manage user carts and cart items.
 
+## Prerequisites
+
+- Node.js (v14 or higher)
+- MongoDB
+
 ## Installation
 
-To install the dependencies, run:
+1. Clone the repository:
 
-```bash
-npm install
-```
+    ```sh
+    git clone <repository-url>
+    cd ecom-api-app/backend
+    ```
 
-## Usage
+2. Install the dependencies:
 
-To start the server, run:
+    ```sh
+    npm install
+    ```
 
-```bash
-npm start
-```
+3. Create a [.env](http://_vscodecontentref_/1) file in the root directory and add the following environment variables:
+
+    ```env
+    NODE_ENV=development
+    PORT=3100
+    DB_HOST=localhost
+    DB_PORT=27017
+    DB_NAME=ecom_db
+    JWT_SECRET=your_jwt_secret
+    SUCCESS_CODE=200
+    CREATED_CODE=201
+    NO_CONTENT_CODE=204
+    BAD_REQUEST_CODE=400
+    UNAUTHORIZED_CODE=401
+    FORBIDDEN_CODE=403
+    NOT_FOUND_CODE=404
+    CONFLICT_CODE=409
+    INTERNAL_SERVER_ERROR_CODE=500
+    ```
+
+4. Start the MongoDB server:
+
+    ```sh
+    mongod
+    ```
+
+5. Start the application:
+
+    ```sh
+    npm start
+    ```
 
 ## API Documentation
 
 The API is documented using Swagger. You can access the Swagger UI at `/api-docs` once the server is running.
 
-## Scripts
+## Running Tests
 
-- `start`: Starts the server.
+To run the tests, use the following command:
 
-## License
-
-This project is licensed under the MIT License.
+```sh
+npm test

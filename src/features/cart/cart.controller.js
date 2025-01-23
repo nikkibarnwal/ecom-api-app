@@ -1,3 +1,9 @@
+import {
+  BAD_REQUEST_CODE,
+  CREATED_CODE,
+  INTERNAL_SERVER_ERROR_CODE,
+  SUCCESS_CODE,
+} from "../../config/statusCode.js";
 import CartModel from "./cart.model.js";
 
 export default class CartController {
@@ -8,28 +14,28 @@ export default class CartController {
       const { productId, quantity } = req.body;
       if (quantity < 1) {
         return res
-          .status(process.env.BAD_REQUEST_CODE)
+          .status(BAD_REQUEST_CODE)
           .json({ message: "quantity must be greater then 0", success: false });
       }
       if (!userId || !productId || !quantity) {
         return res
-          .status(process.env.BAD_REQUEST_CODE)
+          .status(BAD_REQUEST_CODE)
           .json({ message: "Missing required fields", success: false });
       }
 
       const cart = CartModel.add(userId, productId, quantity);
       if (cart) {
         return res
-          .status(process.env.BAD_REQUEST_CODE)
+          .status(BAD_REQUEST_CODE)
           .json({ message: cart, success: false });
       } else {
         return res
-          .status(process.env.CREATED_CODE)
+          .status(CREATED_CODE)
           .json({ message: "Cart is updated", success: true });
       }
     } catch (error) {
       return res
-        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
+        .status(INTERNAL_SERVER_ERROR_CODE)
         .json({ message: "Internal server error", error, success: false });
     }
   }
@@ -38,12 +44,10 @@ export default class CartController {
     const userId = req.jwtUserID;
     const cartItems = CartModel.get(userId);
     try {
-      return res
-        .status(process.env.SUCCESS_CODE)
-        .json({ cart: cartItems, success: true });
+      return res.status(SUCCESS_CODE).json({ cart: cartItems, success: true });
     } catch (error) {
       return res
-        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
+        .status(INTERNAL_SERVER_ERROR_CODE)
         .json({ message: "Internal server error", error, success: false });
     }
   }
@@ -53,7 +57,7 @@ export default class CartController {
     try {
       if (!userId || !cartItemId)
         return res
-          .status(process.env.BAD_REQUEST_CODE)
+          .status(BAD_REQUEST_CODE)
           .json({ message: "missing required cartItemId", success: false });
       else {
         const error = CartModel.delete(cartItemId, userId);
@@ -68,7 +72,7 @@ export default class CartController {
       }
     } catch (error) {
       res
-        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
+        .status(INTERNAL_SERVER_ERROR_CODE)
         .json({ message: "Internal server error", error, success: false });
     }
   }
@@ -82,7 +86,7 @@ export default class CartController {
       else CartModel.clear(cartItemId, userId);
     } catch (error) {
       res
-        .status(process.env.INTERNAL_SERVER_ERROR_CODE)
+        .status(INTERNAL_SERVER_ERROR_CODE)
         .json({ message: "Internal server error", error, success: false });
     }
   }
