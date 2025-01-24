@@ -2,12 +2,20 @@ import {
   BAD_REQUEST_CODE,
   CREATED_CODE,
   INTERNAL_SERVER_ERROR_CODE,
+  NOT_FOUND_CODE,
   SUCCESS_CODE,
 } from "../../config/statusCode.js";
+import ApplicationError from "../../error-handler/applicationError.js";
+import ProductRespository from "../product/product.repository.js";
 import CartModel from "./cart.model.js";
+import CartRepository from "./cart.repository.js";
 
 export default class CartController {
-  add(req, res) {
+  constructor() {
+    this.cartRepository = new CartRepository();
+    this.productRepository = new ProductRespository();
+  }
+  async add(req, res) {
     try {
       // this is coming from jwtAuth.middleware file
       const userId = req.jwtUserID;
@@ -17,33 +25,38 @@ export default class CartController {
           .status(BAD_REQUEST_CODE)
           .json({ message: "quantity must be greater then 0", success: false });
       }
-      if (!userId || !productId || !quantity) {
+      if (!productId || !quantity) {
         return res
           .status(BAD_REQUEST_CODE)
           .json({ message: "Missing required fields", success: false });
       }
-
-      const cart = CartModel.add(userId, productId, quantity);
-      if (cart) {
+      // check if product exists
+      const product = await this.productRepository.get(productId);
+      // const product = ProductModel.get(productId);
+      if (!product) {
         return res
           .status(BAD_REQUEST_CODE)
-          .json({ message: cart, success: false });
+          .send({ success: false, message: "Product not found" });
       } else {
+        await this.cartRepository.createCart(userId, productId, quantity);
+        // const cart = CartModel.add(userId, productId, quantity);
         return res
           .status(CREATED_CODE)
           .json({ message: "Cart is updated", success: true });
       }
     } catch (error) {
+      console.log(error);
       return res
         .status(INTERNAL_SERVER_ERROR_CODE)
         .json({ message: "Internal server error", error, success: false });
     }
   }
-  getCartItemByUserId(req, res) {
+  async getCartItemByUserId(req, res) {
     // this is coming from jwtAuth.middleware file
-    const userId = req.jwtUserID;
-    const cartItems = CartModel.get(userId);
     try {
+      const userId = req.jwtUserID;
+      // const cartItems = CartModel.get(userId);
+      const cartItems = await this.cartRepository.getCartByUserId(userId);
       return res.status(SUCCESS_CODE).json({ cart: cartItems, success: true });
     } catch (error) {
       return res
@@ -51,7 +64,7 @@ export default class CartController {
         .json({ message: "Internal server error", error, success: false });
     }
   }
-  deleteItem(req, res) {
+  async deleteItem(req, res) {
     const userId = req.jwtUserID;
     const cartItemId = req.params.id;
     try {
@@ -60,14 +73,18 @@ export default class CartController {
           .status(BAD_REQUEST_CODE)
           .json({ message: "missing required cartItemId", success: false });
       else {
-        const error = CartModel.delete(cartItemId, userId);
-        if (error) {
-          return res.status(404).json({ message: error, success: false });
-        } else {
-          return res.status(200).send({
+        // const isDeleted = CartModel.delete(cartItemId, userId);
+
+        const isDeleted = await this.cartRepository.delete(cartItemId, userId);
+        if (isDeleted) {
+          return res.status(SUCCESS_CODE).send({
             message: "Cart item is removed successfully",
             success: true,
           });
+        } else {
+          return res
+            .status(NOT_FOUND_CODE)
+            .json({ message: "Item not found", success: false });
         }
       }
     } catch (error) {
@@ -76,18 +93,27 @@ export default class CartController {
         .json({ message: "Internal server error", error, success: false });
     }
   }
-  clearCart() {
+  // clear cart for logged in user
+  async clearCart(req, res) {
     const userId = req.jwtUserID;
     try {
       if (!userId)
         return res
-          .status(404)
+          .status(NOT_FOUND_CODE)
           .json({ message: "missing user details", success: false });
-      else CartModel.clear(cartItemId, userId);
+      else {
+        // CartModel.clear(cartItemId, userId);
+        await this.cartRepository.clear(userId);
+        return res.status(SUCCESS_CODE).send({
+          message: "Cart item is cleared successfully",
+          success: true,
+        });
+      }
     } catch (error) {
+      console.log(error);
       res
         .status(INTERNAL_SERVER_ERROR_CODE)
-        .json({ message: "Internal server error", error, success: false });
+        .json({ message: "Internal server error", success: false });
     }
   }
 }

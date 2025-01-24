@@ -3,8 +3,8 @@ import UserModel from "../user/user.model.js";
 import ProductModel from "../product/product.model.js";
 
 export default class CartModel {
-  constructor(productId, userId, quantity, id) {
-    this._id = id;
+  constructor(id, productId, userId, quantity) {
+    this.id = id;
     this.productId = productId;
     this.userId = userId;
     this.quantity = quantity;

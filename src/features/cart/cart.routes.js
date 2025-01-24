@@ -4,11 +4,11 @@ import CartController from "./cart.controller.js";
 const cartRouter = express.Router();
 const cartController = new CartController();
 
-cartRouter.post("/", cartController.add);
+cartRouter.post("/", (req, res) => cartController.add(req, res));
 
-cartRouter.get("/", cartController.getCartItemByUserId);
-cartRouter.get("/clear", cartController.clearCart);
-cartRouter.delete("/:id", cartController.deleteItem);
+cartRouter.get("/", (req, res) => cartController.getCartItemByUserId(req, res));
+cartRouter.get("/clear", (req, res) => cartController.clearCart(req, res));
+cartRouter.delete("/:id", (req, res) => cartController.deleteItem(req, res));
 
 /**
  * Router handling all cart-related routes.
