@@ -53,11 +53,13 @@ class ProductRespository {
   }
   async filter(minPrice, maxPrice, category) {
     try {
-      const filterExpression = {};
+      let filterExpression = {};
+      /* Here if we have minPrice , maxPrice and category then we are filtering the products based on 
+       all the three, mongodb will add the $and operator by default */
       if (minPrice) {
         filterExpression.price = { $gte: Number(minPrice) };
       }
-      if (maxPrice) {
+      /*if (maxPrice) {
         filterExpression.price = {
           ...filterExpression.price,
           $lte: Number(maxPrice),
@@ -65,10 +67,26 @@ class ProductRespository {
       }
       if (category) {
         filterExpression.category = category;
+      } */
+      /*If we want to add $and operator manual then can do like below */
+      if (maxPrice) {
+        filterExpression = {
+          $and: [{ price: { $lte: Number(maxPrice) } }, filterExpression],
+        };
       }
+      // if we are send category as array then we are filtering the products based on the category with $in operator
+      if (category) {
+        // here we are converting the string to array and replacing the single quotes with double quotes
+        let categories = JSON.parse(category.replace(/'/g, '"'));
+        filterExpression = {
+          $or: [{ category: { $in: categories } }, filterExpression],
+        };
+      }
+      console.log(filterExpression);
       const productCollection = await getProductCollection();
       return await productCollection.find(filterExpression).toArray();
     } catch (error) {
+      console.log(error);
       throw new ApplicationError(
         "Problem with filtering the product",
         INTERNAL_SERVER_ERROR_CODE
