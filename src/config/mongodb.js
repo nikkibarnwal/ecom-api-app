@@ -24,6 +24,8 @@ export const connectToMongoDB = () => {
     console.log("Connected to MongoDB");
     client = clientInstance;
     const db = client.db();
+    // create the indexes for the collections
+    createIndexes(db);
     /**inserting default data to the collections */
     const productsCollection = db.collection(PRODUCT_COLLECTION);
     const categorysCollection = db.collection(CATEGORY_COLLECTION);
@@ -39,4 +41,17 @@ export const getMongoDB = () => {
   //   we are not using any database name here because
   //   we are using the default database in the connection string
   /*  return client.db("ecom-db"); */
+};
+
+const createIndexes = async (db) => {
+  const productsCollection = db.collection(PRODUCT_COLLECTION);
+  /**
+   here we are creating the indexes for the price fields in the collection so that
+   we can use the sort on the field ascending(1) or descending(-1) order
+   we can also create the indexes on multiple fields like name and category
+   we can also create the text index on the description field so that we can use the text search */
+  await productsCollection.createIndex({ price: 1 });
+  await productsCollection.createIndex({ name: 1, category: -1 });
+  await productsCollection.createIndex({ desc: "text" });
+  console.log("Created indexes");
 };
