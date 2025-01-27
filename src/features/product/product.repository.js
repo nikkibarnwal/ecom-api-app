@@ -22,7 +22,8 @@ class ProductRespository {
     } catch (error) {
       throw new ApplicationError(
         "Problem with adding the product",
-        INTERNAL_SERVER_ERROR_CODE
+        INTERNAL_SERVER_ERROR_CODE,
+        error.message
       );
     }
   }
@@ -37,59 +38,63 @@ class ProductRespository {
       );
     }
   }
+  /**
+   * Retrieves a product by its ID.
+   *
+   * @param {string} id - The ID of the product to retrieve.
+   * @returns {Promise<Object|null>} The product object if found, otherwise null.
+   * @throws {ApplicationError} If there is a problem with getting the product.
+   */
   async get(id) {
     try {
+      if (!ObjectId.isValid(id)) {
+        return null;
+      }
       const productCollection = await getProductCollection();
       const product = await productCollection.findOne({
         _id: new ObjectId(id),
       });
       return product;
     } catch (error) {
+      if (error instanceof TypeError) {
+        return null;
+      }
       throw new ApplicationError(
         "Problem with getting the product",
         INTERNAL_SERVER_ERROR_CODE
       );
     }
   }
-  async filter(minPrice, maxPrice, category) {
+  async filter(minPrice, maxPrice, categories) {
     try {
       let filterExpression = {};
-      /* Here if we have minPrice , maxPrice and category then we are filtering the products based on 
-       all the three, mongodb will add the $and operator by default */
-      if (minPrice) {
-        filterExpression.price = { $gte: Number(minPrice) };
+      if (minPrice !== undefined) {
+        filterExpression.price = {
+          $gte: Number(minPrice),
+        };
       }
-      /*if (maxPrice) {
+      if (maxPrice !== undefined) {
         filterExpression.price = {
           ...filterExpression.price,
           $lte: Number(maxPrice),
         };
       }
-      if (category) {
-        filterExpression.category = category;
-      } */
-      /*If we want to add $and operator manual then can do like below */
-      if (maxPrice) {
-        filterExpression = {
-          $and: [{ price: { $lte: Number(maxPrice) } }, filterExpression],
-        };
+      if (categories && categories.length > 0) {
+        filterExpression.category = { $in: categories };
       }
-      // if we are send category as array then we are filtering the products based on the category with $in operator
-      if (category) {
-        // here we are converting the string to array and replacing the single quotes with double quotes
-        let categories = JSON.parse(category.replace(/'/g, '"'));
-        filterExpression = {
-          $or: [{ category: { $in: categories } }, filterExpression],
-        };
-      }
-      console.log(filterExpression);
-      const productCollection = await getProductCollection();
-      return await productCollection.find(filterExpression).toArray();
+      return await getProductCollection()
+        .find(filterExpression)
+        .project({ name: 1, price: 1, ratings: 1, _id: 0 })
+        .toArray();
+      // return await productCollection
+      //   .find(filterExpression)
+      //   .project({ name: 1, price: 1, ratings: 1, _id: 0 })
+      //   .toArray();
     } catch (error) {
-      console.log(error);
       throw new ApplicationError(
         "Problem with filtering the product",
-        INTERNAL_SERVER_ERROR_CODE
+        INTERNAL_SERVER_ERROR_CODE,
+        error.message
       );
     }
   }
@@ -154,6 +159,90 @@ class ProductRespository {
       throw new ApplicationError(
         "Problem with rating the product",
         INTERNAL_SERVER_ERROR_CODE
+      );
+    }
+  }
+  async getAveragePricePerCategory() {
+    try {
+      const collection = getProductCollection();
+      // here we want to return the average price of the product per category like below
+      // { _id: "Electronics", averagePrice: 200 }
+      // becasue we may have multiple records of the same category so we are using toArray() method
+      return await collection
+        .aggregate([
+          {
+            $group: {
+              _id: "$category",
+              averagePrice: { $avg: "$price" },
+            },
+          },
+        ])
+        .toArray();
+    } catch (error) {
+      throw new ApplicationError(
+        "Problem with getting the average price per category",
+        INTERNAL_SERVER_ERROR_CODE,
+        error.message
+      );
+    }
+  }
+  async getAverageRating() {
+    try {
+      const collection = await getProductCollection();
+      return await collection
+        .aggregate([
+          { $unwind: "$ratings" },
+          {
+            $group: {
+              _id: "$name",
+              averageRating: { $avg: "$ratings.rating" },
+            },
+          },
+        ])
+        .toArray();
+    } catch (error) {
+      throw new ApplicationError(
+        "Problem with getting the average rating",
+        INTERNAL_SERVER_ERROR_CODE,
+        error.message
+      );
+    }
+  }
+  async getRatingCount() {
+    try {
+      const collection = await getProductCollection();
+      return await collection
+        .aggregate([
+          {
+            $project: {
+              name: 1,
+              countOfRatings: {
+                $cond: {
+                  // here we are checking if the ratings field is an array or not
+                  if: { $isArray: "$ratings" },
+                  then: { $size: "$ratings" },
+                  else: 0,
+                },
+              },
+              _id: 0,
+            },
+          },
+          {
+            // here we are sorting the products based on the countOfRatings field
+            $sort: { countOfRatings: -1 },
+          },
+          // if we want to get only highest rating single product then we can use below code
+          // { $limit: 1 },
+          // if we want to get only lowest rating single product then we can use below code
+          // { $limit: -1 },
+        ])
+        .toArray();
+    } catch (error) {
+      console.log(error);
+      throw new ApplicationError(
+        "Problem with getting the rating count",
+        INTERNAL_SERVER_ERROR_CODE,
+        error.message
       );
     }
   }

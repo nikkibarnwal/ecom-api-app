@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
-import users from "../data/users.json" assert { type: "json" };
-import categorys from "../data/categorys.json" assert { type: "json" };
-import products from "../data/products.json" assert { type: "json" };
+// import users from "../data/users.json" assert { type: "json" };
+// import categorys from "../data/categorys.json" assert { type: "json" };
+// import products from "../data/products.json" assert { type: "json" };
 import {
   CATEGORY_COLLECTION,
   PRODUCT_COLLECTION,
@@ -27,13 +27,13 @@ export const connectToMongoDB = () => {
     // create the indexes for the collections
     createIndexes(db);
     /**inserting default data to the collections */
-    const productsCollection = db.collection(PRODUCT_COLLECTION);
-    const categorysCollection = db.collection(CATEGORY_COLLECTION);
-    const usersCollection = db.collection(USER_COLLECTION);
+    // const productsCollection = db.collection(PRODUCT_COLLECTION);
+    // const categorysCollection = db.collection(CATEGORY_COLLECTION);
+    // const usersCollection = db.collection(USER_COLLECTION);
 
-    checkAndInsertData(productsCollection, products);
-    checkAndInsertData(categorysCollection, categorys);
-    checkAndInsertData(usersCollection, users);
+    // checkAndInsertData(productsCollection, products);
+    // checkAndInsertData(categorysCollection, categorys);
+    // checkAndInsertData(usersCollection, users);
   });
 };
 export const getMongoDB = () => {
