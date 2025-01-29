@@ -18,7 +18,11 @@ class UserRepository {
       delete user.password; // removed password from response
       return user;
     } catch (error) {
-      throw new ApplicationError(error.message, INTERNAL_SERVER_ERROR_CODE);
+      throw new ApplicationError(
+        "problem with signup a user",
+        INTERNAL_SERVER_ERROR_CODE,
+        error.message
+      );
     }
   }
   async login(email, password) {

@@ -6,14 +6,14 @@ import validateSignInData from "../../middlewares/validateSignInData.middleware.
 const userRouter = express.Router();
 const userController = new UserController();
 
-userRouter.post("/signup", validateSignUpData, (req, res) => {
+userRouter.post("/signup", validateSignUpData, (req, res, next) =>
   /* because we are using the class UserController 
   and have to create an instance of it for userReposiotry*/
-  userController.signUp(req, res);
-});
+  userController.signUp(req, res, next)
+);
 
-userRouter.post("/signin", validateSignInData, (req, res) => {
-  userController.singIn(req, res);
-});
+userRouter.post("/signin", validateSignInData, (req, res, next) =>
+  userController.singIn(req, res, next)
+);
 
 export default userRouter;

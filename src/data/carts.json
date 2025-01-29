@@ -1,33 +1,29 @@
-{
-  "cartId": "12345",
-  "userId": "67890",
-  "products": [
-    {
-      "productId": "abc123",
-      "name": "Product Name",
-      "quantity": 2,
-      "price": 29.99
+[
+  {
+    "userId": {
+      "$oid": "679778b02bfd76805bae18ce"
     },
-    {
-      "productId": "def456",
-      "name": "Product Name",
-      "quantity": 1,
-      "price": 49.99
+    "productId": {
+      "$oid": "679778637a2a4e18a92734f7"
     },
-    {
-      "productId": "abc123",
-      "name": "Product Name",
-      "quantity": 2,
-      "price": 29.99
+    "quantity": 2
+  },
+  {
+    "userId": {
+      "$oid": "679778b02bfd76805bae18ce"
     },
-    {
-      "productId": "def456",
-      "name": "Product Name",
-      "quantity": 1,
-      "price": 49.99
-    }
-  ],
-  "totalPrice": 160.96,
-  "createdAt": "2023-10-05T14:48:00.000Z",
-  "updatedAt": "2023-10-05T14:48:00.000Z"
-}
+    "productId": {
+      "$oid": "679778637a2a4e18a92734f6"
+    },
+    "quantity": 6
+  },
+  {
+    "userId": {
+      "$oid": "679778b02bfd76805bae18ce"
+    },
+    "productId": {
+      "$oid": "679778637a2a4e18a92734f8"
+    },
+    "quantity": 8
+  }
+]

@@ -1,0 +1,28 @@
+/**
+ * Creates a new order with the specified details.
+ *
+ * Steps to create order functionalities:
+ * 1. Validate the input parameters to ensure they meet the required criteria.
+ * 2. Check the availability of the items in the inventory.
+ * 3. Calculate the total cost of the order, including any applicable taxes and discounts.
+ * 4. Generate a unique order ID for tracking purposes.
+ * 5. Save the order details to the database.
+ * 6. Update the inventory to reflect the items that have been ordered.
+ * 7. Send a confirmation email to the customer with the order details.
+ * 8. Return a response indicating the success or failure of the order creation process.
+ *
+ * @param {Object} orderDetails - An object containing the details of the order.
+ * @param {Array} orderDetails.items - An array of items to be included in the order.
+ * @param {number} orderDetails.total - The total cost of the order.
+ * @param {string} orderDetails.customerEmail - The email address of the customer.
+ * @returns {Object} - An object containing the status and details of the created order.
+ */
+ Place order
+  1- Get user's cart item, calculate total amount,
+  2- Create a record for order
+  3- Reduce the stock from product quantity
+  4- Clear the cart
+  
+  5- Deduct the payment
+  6- Inform to seller
+  7- Inform to courier

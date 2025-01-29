@@ -2,19 +2,19 @@
   {
     "name": "John Doe",
     "email": "john.doe@example.com",
-    "password": "password123",
+    "password": "$2b$12$jtO62Za3ubKUKizpvMkm6ODHlzxLPUuTJdQPOsVTCyIxtE/gZwsIS",
     "usertype": "admin"
   },
   {
     "name": "Jane Smith",
     "email": "jane.smith@example.com",
-    "password": "password456",
+    "password": "$2b$12$jtO62Za3ubKUKizpvMkm6ODHlzxLPUuTJdQPOsVTCyIxtE/gZwsIS",
     "usertype": "customer"
   },
   {
     "name": "Alice Johnson",
     "email": "alice.johnson@example.com",
-    "password": "password789",
+    "password": "$2b$12$jtO62Za3ubKUKizpvMkm6ODHlzxLPUuTJdQPOsVTCyIxtE/gZwsIS",
     "usertype": "seller"
   }
 ]

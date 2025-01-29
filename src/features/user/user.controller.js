@@ -26,16 +26,20 @@ class UserController {
    * @param {Object} res - The response object.
    * @returns {Promise<void>} - A promise that resolves when the user is created.
    */
-  async signUp(req, res) {
-    const { name, email, password, type } = req.body;
-    let hashedPassword = await bcrypt.hash(password, 12);
-    const newUser = new UserModel(name, email, hashedPassword, type);
-    const user = await this.userRepository.create(newUser);
-    res.status(CREATED_CODE).json({
-      succcess: true,
-      message: "User created successfully",
-      data: user,
-    });
+  async signUp(req, res, next) {
+    try {
+      const { name, email, password, type } = req.body;
+      let hashedPassword = await bcrypt.hash(password, 12);
+      const newUser = new UserModel(name, email, hashedPassword, type);
+      const user = await this.userRepository.create(newUser);
+      res.status(CREATED_CODE).json({
+        succcess: true,
+        message: "User created successfully",
+        data: user,
+      });
+    } catch (error) {
+      next(error);
+    }
   }
 
   /**
@@ -54,7 +58,7 @@ class UserController {
    * checks if the user exists, compares the provided password with the stored hashed password, and generates a JWT token
    * if the credentials are correct. It sends appropriate responses based on the success or failure of the sign-in process.
    */
-  async singIn(req, res) {
+  async singIn(req, res, next) {
     // get email and password from request body
     const { email, password } = req.body;
 

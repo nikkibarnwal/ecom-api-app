@@ -17,6 +17,7 @@ import loggerMiddleware from "./src/middlewares/logger.middleware.js";
 import invalidRoutesHandlerMiddleware from "./src/middlewares/invalidRoutes.middleware.js";
 import { errorHandlerMiddleware } from "./src/middlewares/errorHandler.middleware.js";
 import { connectToMongoDB } from "./src/config/mongodb.js";
+import orderRouter from "./src/features/order/order.routes.js";
 
 /** 2 create server */
 const app = express();
@@ -62,6 +63,7 @@ app.use("/api-docs", swagger.serve, swagger.setup(apiDoc));
 
 app.use("/api/products", jwtAuth, productRouter);
 app.use("/api/cart", jwtAuth, cartRouter);
+app.use("/api/orders", jwtAuth, orderRouter);
 
 // To verify user by basic authentication
 // app.use("/api/products", basicAuthorizer, productRouter);

@@ -1,0 +1,23 @@
+{"level":"error","message":"passwordxx is not defined","service":"request-logging"}
+{"level":"error","message":"passwordxx is not defined","service":"request-logging"}
+{"level":"error","message":"users is not defined","service":"request-logging"}
+{"level":"error","message":"users is not defined","service":"request-logging"}
+{"level":"error","service":"request-logging"}
+{"level":"error","message":"users is not defined","service":"request-logging"}
+{"level":"error","message":"orderData is not defined","service":"request-logging"}
+{"level":"error","message":"getCartCollection is not defined","service":"request-logging"}
+{"level":"error","message":"collection.aggregator is not a function","service":"request-logging"}
+{"level":"error","message":"Unrecognized pipeline stage name: '$addField'","service":"request-logging"}
+{"level":"error","message":"INTERNAL_SERVER_ERROR_CODE is not defined","service":"request-logging"}
+{"level":"error","message":"ClientSession cannot be serialized to BSON.","service":"request-logging"}
+{"level":"error","message":"session is not defined","service":"request-logging"}
+{"level":"error","message":"ClientSession cannot be serialized to BSON.","service":"request-logging"}
+{"level":"error","message":"result is not defined","service":"request-logging"}
+{"level":"error","message":"result is not defined","service":"request-logging"}
+{"level":"error","message":"Transaction numbers are only allowed on a replica set member or mongos","service":"request-logging"}
+{"level":"error","message":"Transaction numbers are only allowed on a replica set member or mongos","service":"request-logging"}
+{"level":"error","message":"Transaction numbers are only allowed on a replica set member or mongos","service":"request-logging"}
+{"level":"error","message":"Transaction numbers are only allowed on a replica set member or mongos","service":"request-logging"}
+{"level":"error","message":"Transaction numbers are only allowed on a replica set member or mongos","service":"request-logging"}
+{"level":"error","message":"Transaction numbers are only allowed on a replica set member or mongos","service":"request-logging"}
+{"level":"error","message":"hex string must be 24 characters","service":"request-logging"}

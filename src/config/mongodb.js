@@ -36,6 +36,7 @@ export const connectToMongoDB = () => {
     // checkAndInsertData(usersCollection, users);
   });
 };
+export const getClient = () => client;
 export const getMongoDB = () => {
   return client.db();
   //   we are not using any database name here because
