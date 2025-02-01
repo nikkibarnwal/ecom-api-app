@@ -1,42 +1,58 @@
+import mongoose from "mongoose";
 import { USER_COLLECTION } from "../../config/collection.js";
-import { getMongoDB } from "../../config/mongodb.js";
+import { UserScema } from "./user.schema.js";
 import ApplicationError from "../../error-handler/applicationError.js";
 import {
-  BAD_REQUEST_CODE,
   INTERNAL_SERVER_ERROR_CODE,
+  NOT_FOUND_CODE,
 } from "../../config/statusCode.js";
+import { InObjectId } from "../../utils/common.js";
 
-const getUsersCollection = async () => {
-  const db = getMongoDB();
-  return db.collection(USER_COLLECTION);
-};
+// define the user model with the schema
+const UserModel = mongoose.model(USER_COLLECTION, UserScema);
+
+// here we are peforing the CRUD operations on the user collection by using the mongoose
 class UserRepository {
+  /**
+   * Creates a new user.
+   *
+   * @param {Object} user - The user object.
+   * @returns {Promise<Object>} - A promise that resolves when the operation is complete.
+   */
   async create(user) {
     try {
-      const userCollection = await getUsersCollection();
-      await userCollection.insertOne(user);
-      delete user.password; // removed password from response
-      return user;
+      const newUser = new UserModel(user);
+      await newUser.save();
+      //  removed password from response
+      newUser.password = undefined;
+      return newUser;
     } catch (error) {
-      throw new ApplicationError(
-        "problem with signup a user",
-        INTERNAL_SERVER_ERROR_CODE,
-        error.message
-      );
+      throw new ApplicationError(error.message, INTERNAL_SERVER_ERROR_CODE);
     }
   }
   async login(email, password) {
     try {
-      const userCollection = await getUsersCollection();
-      return await userCollection.findOne({ email, password });
+      return await UserModel.findOne({ email, password });
     } catch (error) {
       throw new ApplicationError(error.message, INTERNAL_SERVER_ERROR_CODE);
     }
   }
   async getByEmail(email) {
     try {
-      const userCollection = await getUsersCollection();
-      return await userCollection.findOne({ email });
+      return await UserModel.findOne({ email });
+    } catch (error) {
+      throw new ApplicationError(error.message, INTERNAL_SERVER_ERROR_CODE);
+    }
+  }
+  async updatePassword(userId, password) {
+    try {
+      const user = await UserModel.findById(InObjectId(userId));
+      if (!user) {
+        throw new ApplicationError("User not found", NOT_FOUND_CODE);
+      } else {
+        user.password = password;
+        user.save();
+      }
     } catch (error) {
       throw new ApplicationError(error.message, INTERNAL_SERVER_ERROR_CODE);
     }

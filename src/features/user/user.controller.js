@@ -59,46 +59,65 @@ class UserController {
    * if the credentials are correct. It sends appropriate responses based on the success or failure of the sign-in process.
    */
   async singIn(req, res, next) {
-    // get email and password from request body
-    const { email, password } = req.body;
+    try {
+      // get email and password from request body
+      const { email, password } = req.body;
 
-    // get user by email
-    const user = await this.userRepository.getByEmail(email);
+      // get user by email
+      const user = await this.userRepository.getByEmail(email);
 
-    // if user not found, return error response
-    if (!user) {
-      return res
-        .status(BAD_REQUEST_CODE)
-        .json({ message: "Wrong Credentials", succcess: false });
-    } else {
-      // compare password with hashed password
-      const isPasswordMatch = await bcrypt.compare(password, user.password);
-
-      // if password does not match, return error response
-      if (!isPasswordMatch) {
+      // if user not found, return error response
+      if (!user) {
         return res
           .status(BAD_REQUEST_CODE)
           .json({ message: "Wrong Credentials", succcess: false });
       } else {
-        // generate JWT token
-        const token = jwt.sign(
-          {
-            userid: user._id,
-            name: user.name,
-            email: user.email,
-            type: user.type,
-          },
-          process.env.JWT_SECRET,
-          {
-            expiresIn: "1h",
-          }
-        );
+        // compare password with hashed password
+        const isPasswordMatch = await bcrypt.compare(password, user.password);
 
-        // return success response with token
-        return res
-          .status(SUCCESS_CODE)
-          .send({ message: "Login successfull", token, succcess: true });
+        // if password does not match, return error response
+        if (!isPasswordMatch) {
+          return res
+            .status(BAD_REQUEST_CODE)
+            .json({ message: "Wrong Credentials", succcess: false });
+        } else {
+          // generate JWT token
+          const token = jwt.sign(
+            {
+              userid: user._id,
+              name: user.name,
+              email: user.email,
+              type: user.type,
+            },
+            process.env.JWT_SECRET,
+            {
+              expiresIn: "1h",
+            }
+          );
+
+          // return success response with token
+          return res
+            .status(SUCCESS_CODE)
+            .send({ message: "Login successfull", token, succcess: true });
+        }
       }
+    } catch (error) {
+      next(error);
+    }
+  }
+  async resetPassword(req, res, next) {
+    try {
+      const { password } = req.body;
+      const userId = req.jwtUserID;
+      let hashedPassword = await bcrypt.hash(password, 12);
+      await this.userRepository.updatePassword(userId, hashedPassword);
+
+      return res.status(SUCCESS_CODE).send({
+        message: "Reset password successfully",
+        succcess: true,
+      });
+    } catch (error) {
+      next(error);
     }
   }
 }

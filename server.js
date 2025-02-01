@@ -18,6 +18,7 @@ import invalidRoutesHandlerMiddleware from "./src/middlewares/invalidRoutes.midd
 import { errorHandlerMiddleware } from "./src/middlewares/errorHandler.middleware.js";
 import { connectToMongoDB } from "./src/config/mongodb.js";
 import orderRouter from "./src/features/order/order.routes.js";
+import { connectUsingMongoose } from "./src/config/mongooseConfig.js";
 
 /** 2 create server */
 const app = express();
@@ -90,5 +91,6 @@ app.use(invalidRoutesHandlerMiddleware);
 app.listen(process.env.PORT, () => {
   console.log("Server is listoning on " + process.env.PORT);
   /** 6 connect to mongodb */
-  connectToMongoDB();
+  // connectToMongoDB();
+  connectUsingMongoose();
 });
