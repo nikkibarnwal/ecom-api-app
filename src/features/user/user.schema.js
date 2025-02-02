@@ -17,7 +17,7 @@ export const UserScema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    maxLenght: [25, "Name can't be greater than 25 characters"],
+    maxLength: [25, "Name can't be greater than 25 characters"],
   },
   email: {
     type: String,

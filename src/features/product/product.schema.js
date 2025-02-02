@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
-import { USER_COLLECTION } from "../../config/collection.js";
+import {
+  REVIEWS_COLLECTION,
+  USER_COLLECTION,
+} from "../../config/collection.js";
 
 // name, desc, price, category, imageUrl, sizes = []
 
-export const ProductSchema = new mongoose.Schema({
+const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true },
   desc: String,
   price: { type: Number, required: true },
@@ -21,5 +24,12 @@ export const ProductSchema = new mongoose.Schema({
       rating: { type: Number, required: true },
     },
   ],
+  reviews: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: REVIEWS_COLLECTION,
+    },
+  ],
 });
 // export default mongoose.model("Product", ProductSchema);
+export default ProductSchema;

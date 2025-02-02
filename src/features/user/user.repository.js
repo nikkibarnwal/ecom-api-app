@@ -3,6 +3,7 @@ import { USER_COLLECTION } from "../../config/collection.js";
 import { UserScema } from "./user.schema.js";
 import ApplicationError from "../../error-handler/applicationError.js";
 import {
+  BAD_REQUEST_CODE,
   INTERNAL_SERVER_ERROR_CODE,
   NOT_FOUND_CODE,
 } from "../../config/statusCode.js";
@@ -27,7 +28,14 @@ class UserRepository {
       newUser.password = undefined;
       return newUser;
     } catch (error) {
-      throw new ApplicationError(error.message, INTERNAL_SERVER_ERROR_CODE);
+      if (error instanceof mongoose.Error.ValidationError) {
+        throw new ApplicationError(error.message, BAD_REQUEST_CODE);
+      } else if (error.code === 11000) {
+        // Handle unique constraint error
+        throw new ApplicationError("Email already exists", BAD_REQUEST_CODE);
+      } else {
+        throw new ApplicationError(error.message, INTERNAL_SERVER_ERROR_CODE);
+      }
     }
   }
   async login(email, password) {

@@ -1,21 +1,11 @@
 import { ObjectId } from "mongodb";
-import {
-  PRODUCT_COLLECTION,
-  REVIEWS_COLLECTION,
-} from "../../config/collection.js";
+import { PRODUCT_COLLECTION } from "../../config/collection.js";
 import { getMongoDB } from "../../config/mongodb.js";
 import {
   INTERNAL_SERVER_ERROR_CODE,
   NOT_FOUND_CODE,
 } from "../../config/statusCode.js";
 import ApplicationError from "../../error-handler/applicationError.js";
-import mongoose from "mongoose";
-import ProductSchema from "./product.schema.js";
-import ReviewSchema from "./review.schema.js";
-import { InObjectId } from "../../utils/common.js";
-
-const ProductModel = mongoose.model(PRODUCT_COLLECTION, ProductSchema);
-const ReviewModel = mongoose.model(REVIEWS_COLLECTION, ReviewSchema);
 
 const getProductCollection = () => {
   const db = getMongoDB();
@@ -150,27 +140,21 @@ class ProductRespository {
   //   in below function we are updating the rating of the product and avoiding the race problem
   async rate(userId, productId, rating) {
     try {
-      // 1 check if product exist
-      const product = await ProductModel.findById(productId);
-      if (!product) {
-        throw new ApplicationError("Product not found", NOT_FOUND_CODE);
-      }
-      // 2 get existing reviews
-      const userReview = await ReviewModel.findOne({
-        product: InObjectId(productId),
-        user: InObjectId(userId),
-      });
-      if (userReview) {
-        userReview.rating = rating;
-        await userReview.save();
-      } else {
-        const newReview = ReviewModel({
-          product: InObjectId(productId),
-          user: InObjectId(userId),
-          rating: rating,
-        });
-        await newReview.save();
-      }
+      const productCollection = await getProductCollection();
+      //  remove existing rating of the user
+      await productCollection.updateOne(
+        {
+          _id: new ObjectId(productId),
+        },
+        { $pull: { ratings: { userId: new ObjectId(userId) } } }
+      );
+      //   add new rating of the user
+      await productCollection.updateOne(
+        {
+          _id: new ObjectId(productId),
+        },
+        { $push: { ratings: { userId: new ObjectId(userId), rating } } }
+      );
     } catch (error) {
       throw new ApplicationError(
         "Problem with rating the product",
