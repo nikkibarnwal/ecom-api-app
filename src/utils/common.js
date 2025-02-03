@@ -9,3 +9,5 @@ export const InObjectId = (id) =>
 
 export const splitTrim = (data, sepration = ",") =>
   data ? data.split(sepration).map((e) => e.trim()) : [];
+
+export const likeTypeCollection = ["product", "category"];
