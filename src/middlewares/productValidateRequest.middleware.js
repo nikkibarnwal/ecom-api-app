@@ -20,17 +20,17 @@ const productValidationRuqest = async (req, res, next) => {
       .withMessage("Product price is required")
       .isFloat({ gt: 0 })
       .withMessage("Product price must be a number greater than 0"),
-    body("category")
+    body("categories")
       .trim()
       .notEmpty()
       .withMessage("Product category is required")
       .isString()
       .withMessage("Product category must be a string"),
-    // body("stock")
-    //   .notEmpty()
-    //   .withMessage("Product stock is required")
-    //   .isInt({ gt: -1 })
-    //   .withMessage("Product stock must be a non-negative integer"),
+    body("stock")
+      .notEmpty()
+      .withMessage("Product stock is required")
+      .isInt({ gt: -1 })
+      .withMessage("Product stock must be a non-negative integer"),
   ];
   await Promise.all(rules.map((rule) => rule.run(req)));
 

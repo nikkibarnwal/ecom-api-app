@@ -13,6 +13,7 @@ import mongoose from "mongoose";
 import ProductSchema from "./product.schema.js";
 import ReviewSchema from "./review.schema.js";
 import { InObjectId } from "../../utils/common.js";
+import CategoryModel from "./category.schema.js";
 
 const ProductModel = mongoose.model(PRODUCT_COLLECTION, ProductSchema);
 const ReviewModel = mongoose.model(REVIEWS_COLLECTION, ReviewSchema);
@@ -23,12 +24,23 @@ const getProductCollection = () => {
 };
 
 class ProductRespository {
-  async add(product) {
+  async add(productData) {
     try {
-      product.createdAt = new Date();
-      const productCollection = await getProductCollection();
-      await productCollection.insertOne(product);
-      return product;
+      // 1 Add product
+      const newProduct = new ProductModel(productData);
+      const savedProduct = await newProduct.save();
+      // 2 Update categories
+      await CategoryModel.updateMany(
+        {
+          _id: { $in: productData.categories },
+        },
+        {
+          $push: {
+            products: savedProduct._id,
+          },
+        }
+      );
+      return savedProduct;
     } catch (error) {
       throw new ApplicationError(
         "Problem with adding the product",
@@ -155,6 +167,7 @@ class ProductRespository {
       if (!product) {
         throw new ApplicationError("Product not found", NOT_FOUND_CODE);
       }
+      let savedReview;
       // 2 get existing reviews
       const userReview = await ReviewModel.findOne({
         product: InObjectId(productId),
@@ -163,6 +176,7 @@ class ProductRespository {
       if (userReview) {
         userReview.rating = rating;
         await userReview.save();
+        savedReview = userReview;
       } else {
         const newReview = ReviewModel({
           product: InObjectId(productId),
@@ -170,7 +184,9 @@ class ProductRespository {
           rating: rating,
         });
         await newReview.save();
+        savedReview = newReview;
       }
+      return savedReview;
     } catch (error) {
       throw new ApplicationError(
         "Problem with rating the product",

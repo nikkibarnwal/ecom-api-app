@@ -4,7 +4,6 @@ import {
   INTERNAL_SERVER_ERROR_CODE,
   SUCCESS_CODE,
 } from "../../config/statusCode.js";
-import { splitTrim } from "../../utils/common.js";
 import ProductModel from "./product.model.js";
 import ProductRespository from "./product.repository.js";
 
@@ -37,22 +36,20 @@ export default class ProductController {
    * @returns {Promise<void>}
    */
   async addProduct(req, res) {
-    const { name, desc, price, sizes, stock, categories } = req.body;
+    const { name, desc, price, category, sizes } = req.body;
     if (!req.file) {
       return res
         .status(BAD_REQUEST_CODE)
         .send({ success: false, message: "Product image is required" });
     }
-    const productObj = {
+    const productObj = new ProductModel(
       name,
       desc,
-      price: parseFloat(price),
-      imageUrl: req?.file?.filename,
-      sizes: splitTrim(sizes),
-      stock,
-      categories: splitTrim(categories),
-    };
-    // console.log(productObj, sizes);
+      parseFloat(price),
+      category,
+      req.file.filename,
+      sizes ? sizes.split(",") : []
+    );
     const product = await this.productRepository.add(productObj);
     res.status(CREATED_CODE).send({ success: true, product });
   }
