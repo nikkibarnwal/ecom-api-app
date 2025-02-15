@@ -1,6 +1,7 @@
 # Ecom API App
 
-This is the backend for the Ecom API application built with Node.js and Express.
+This is the backend for the Ecom API application built with Node.js and Express.  
+deployed url - https://ecom-api-app.onrender.com/
 
 ## Features
 
@@ -66,6 +67,9 @@ npm test
 ```
 ## Project Structure
 
+## Project Structure
+
+```plaintext
 backend/
     .babelrc
     .env
@@ -103,6 +107,7 @@ backend/
     uploads/
 frontend/
     index.html
+```
 
 
 ## Dependencies
