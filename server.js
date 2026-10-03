@@ -12,7 +12,7 @@ import basicAuthorizer from "./src/middlewares/basicAuthorizer.middleware.js";
 import jwtAuth from "./src/middlewares/jwtAuth.middleware.js";
 
 import cartRouter from "./src/features/cart/cart.routes.js";
-import apiDoc from "./swagger.json" assert { type: "json" };
+import apiDoc from "./swagger.json" with { type: "json" };
 import loggerMiddleware from "./src/middlewares/logger.middleware.js";
 import invalidRoutesHandlerMiddleware from "./src/middlewares/invalidRoutes.middleware.js";
 import { errorHandlerMiddleware } from "./src/middlewares/errorHandler.middleware.js";
@@ -20,6 +20,7 @@ import { connectToMongoDB } from "./src/config/mongodb.js";
 import orderRouter from "./src/features/order/order.routes.js";
 import { connectUsingMongoose } from "./src/config/mongooseConfig.js";
 import likeRouter from "./src/features/like/like.route.js";
+import rateLimiter from "./src/middlewares/rateLimiter.middleware.js";
 
 /** 2 create server */
 const app = express();
@@ -53,6 +54,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(loggerMiddleware);
+app.use(rateLimiter);
 
 /**3 Default API route */
 app.get("/", (req, res) => {
